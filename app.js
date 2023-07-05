@@ -1,3 +1,7 @@
+const synth = window.speechSynthesis;
+
+// opções com imagens
+
 const emocoes =[
     { img:'./img/drink.jpg',texto:"Estou com sede"},
     {img:'./img/food.jpg',texto:"Estou com fome"},
@@ -31,29 +35,45 @@ function criando() {
         expression_box.appendChild(active)
         expression_box.appendChild(info)
         main.appendChild(expression_box)
+
+        expression_box.addEventListener('click',(event)=>{
+            event.preventDefault();
+            const elemento_filho = event.target
+            const elemento_pai = elemento_filho.parentNode
+
+        // Verifica se o navegador suporta a Web Speech API
+            if ('speechSynthesis' in window) {
+                synth.cancel()
+                // Cria um novo objeto SpeechSynthesisUtterance
+                const message = new SpeechSynthesisUtterance();
+                
+                // Define o texto a ser sintetizado
+                message.text = emocoes[elemento_pai.id].texto;
+            
+                // Sintetiza a fala
+                synth.speak(message);
+                    
+                } else {
+                console.log('A funcionalidade de síntese de fala não é suportada neste navegador.');
+                }
+                
+            })
     });
 }
 criando()
 
-// document.addEventListener('click',(event)=>{
-//     console.log(event.target);
-// })
 
 
-// Verifica se o navegador suporta a Web Speech API
-// if ('speechSynthesis' in window) {
-//     // Cria um novo objeto SpeechSynthesisUtterance
-//     const message = new SpeechSynthesisUtterance();
-  
-//     // Define o texto a ser sintetizado
-//     message.text = emocoes[0].texto;
-  
-//     document.addEventListener('click', () => {
-//         // Sintetiza a fala
-//         speechSynthesis.speak(message);
-//       });
-//   } else {
-//     console.log('A funcionalidade de síntese de fala não é suportada neste navegador.');
-//   }
-  
-    
+// caixa de texto
+
+const btn_toggle = document.querySelector(".btn-toggle")
+const text_box = document.querySelector(".text-box")
+const closer = document.querySelector('.close')
+
+
+btn_toggle.addEventListener('click',()=>{
+    text_box.classList.add('show')
+});
+closer.addEventListener('click',()=>{
+    text_box.classList.remove('show')
+});
