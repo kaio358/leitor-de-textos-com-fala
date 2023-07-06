@@ -69,11 +69,56 @@ criando()
 const btn_toggle = document.querySelector(".btn-toggle")
 const text_box = document.querySelector(".text-box")
 const closer = document.querySelector('.close')
-
-
+const read = document.querySelector("#read")
+const textarea = document.querySelector('textarea')
 btn_toggle.addEventListener('click',()=>{
     text_box.classList.add('show')
 });
 closer.addEventListener('click',()=>{
     text_box.classList.remove('show')
 });
+
+read.addEventListener('click',()=>{
+    const message = new SpeechSynthesisUtterance(textarea.value);
+    var selectedOption = select.selectedOptions[0].getAttribute('data-name')
+    const voices = synth.getVoices();
+    for (let i = 0; i < voices.length; i++) {
+        if (voices[i].name === selectedOption) {
+            message.voice = voices[i];
+        }
+    }
+   
+    synth.speak(message)
+
+});
+
+// opções de linguas/traduções
+const select = document.querySelector("select")
+function populateVoiceList() {
+    if (typeof speechSynthesis === "undefined") {
+      return;
+    }
+  
+    const voices = synth.getVoices();
+  
+    for (let i = 0; i < voices.length; i++) {
+      const option = document.createElement("option");
+      option.textContent = `${voices[i].name} (${voices[i].lang})`;
+  
+      if (voices[i].default) {
+        option.textContent += " — DEFAULT";
+      }
+      option.setAttribute("data-lang", voices[i].lang);
+      option.setAttribute("data-name", voices[i].name);
+      select.appendChild(option);
+    }
+  }
+  
+  populateVoiceList();
+  if (
+    typeof speechSynthesis !== "undefined" &&
+    speechSynthesis.onvoiceschanged !== undefined
+  ) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+  }
+  
